@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nginx Reverse Proxy + SSL for Pterodactyl Panel (2026)</title>
+  <meta name="description" content="Set up a custom domain with HTTPS for your Pterodactyl Panel using Nginx and Certbot. Step-by-step with real config files." />
+  <style>
+    :root{--bg:#0d0f14;--surface:#13161e;--card:#1a1e2a;--accent:#5b6ef5;--text:#e2e8f0;--muted:#94a3b8;--border:#2a2f3e;--green:#22c55e}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7}
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+    .logo{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#5b6ef5,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+    nav a{color:var(--muted);text-decoration:none;font-size:0.9rem}
+    .container{max-width:860px;margin:0 auto;padding:3rem 2rem}
+    h1{font-size:2rem;font-weight:900;margin-bottom:0.5rem}
+    .meta{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0 2rem;font-size:0.82rem;color:var(--muted)}
+    .tag{background:rgba(91,110,245,0.15);color:var(--accent);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:700}
+    h2{font-size:1.4rem;font-weight:800;margin:2.5rem 0 0.8rem;padding-top:1rem;border-top:1px solid var(--border)}
+    h3{font-size:1.05rem;font-weight:700;margin:1.5rem 0 0.5rem;color:var(--accent)}
+    p{margin-bottom:1rem;color:#cbd5e1}ul,ol{margin:0 0 1rem 1.5rem;color:#cbd5e1}li{margin-bottom:0.4rem}strong{color:var(--text)}
+    pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;overflow-x:auto;margin:1rem 0}
+    code{font-family:'Fira Code',monospace;font-size:0.88rem;color:#a5f3fc}
+    .callout{border-radius:8px;padding:1rem 1.2rem;margin:1.2rem 0;border-left:3px solid var(--accent);background:rgba(91,110,245,0.1);font-size:0.9rem;color:#cbd5e1}
+    .callout.success{border-color:var(--green);background:rgba(34,197,94,0.1)}
+    .callout.warn{border-color:#f97316;background:rgba(249,115,22,0.1)}
+    footer{background:var(--surface);border-top:1px solid var(--border);padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem}
+    footer a{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="logo">🦕 PterodactylHub</a>
+  <a href="../index.html">← All Guides</a>
+</nav>
+<div class="container">
+  <span class="tag">Advanced</span>
+  <h1>Nginx Reverse Proxy + SSL for Pterodactyl Panel (2026)</h1>
+  <div class="meta">
+    <span>⏱️ 18 min read</span>
+    <span>🔒 SSL/HTTPS</span>
+    <span>📅 Updated May 2026</span>
+  </div>
+
+  <p>Accessing Pterodactyl via <code>http://123.456.789.0</code> works, but it's ugly, insecure, and unprofessional. This guide sets up a proper domain like <code>https://panel.yourdomain.com</code> with a free Let's Encrypt SSL certificate.</p>
+
+  <div class="callout">
+    <strong>Prerequisites:</strong> Pterodactyl Panel running (see <a href="pterodactyl-install.html" style="color:var(--accent)">install guide</a>), a domain name pointed to your server IP (A record), and root VPS access.
+  </div>
+
+  <h2>Step 1 — Point Your Domain</h2>
+  <p>In your domain registrar's DNS settings, create an A record:</p>
+  <pre><code>Type:  A
+Name:  panel          (or @ for root domain)
+Value: YOUR_SERVER_IP
+TTL:   300</code></pre>
+  <p>Wait 5–10 minutes for DNS to propagate. Test with: <code>ping panel.yourdomain.com</code></p>
+
+  <h2>Step 2 — Install Nginx & Certbot</h2>
+  <pre><code>apt update
+apt install -y nginx certbot python3-certbot-nginx</code></pre>
+
+  <h2>Step 3 — Create Nginx Config</h2>
+  <pre><code>nano /etc/nginx/sites-available/pterodactyl</code></pre>
+  <p>Paste this config (replace <code>panel.yourdomain.com</code> with your actual domain):</p>
+  <pre><code>server {
+    listen 80;
+    server_name panel.yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:80;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}</code></pre>
+
+  <div class="callout warn">
+    <strong>Note:</strong> If your Pterodactyl Panel is running on a port other than 80 inside Docker, update <code>proxy_pass http://localhost:PORT</code> accordingly.
+  </div>
+
+  <h2>Step 4 — Enable the Site</h2>
+  <pre><code>ln -s /etc/nginx/sites-available/pterodactyl /etc/nginx/sites-enabled/
+nginx -t    # test config — should say "ok"
+systemctl reload nginx</code></pre>
+
+  <h2>Step 5 — Get Your SSL Certificate</h2>
+  <pre><code>certbot --nginx -d panel.yourdomain.com</code></pre>
+  <p>Certbot will:</p>
+  <ol>
+    <li>Ask for your email (for renewal reminders)</li>
+    <li>Agree to Let's Encrypt ToS</li>
+    <li>Automatically modify your Nginx config to add SSL</li>
+    <li>Set up auto-renewal via a systemd timer</li>
+  </ol>
+
+  <div class="callout success">
+    <strong>✅ Done!</strong> Your panel is now accessible at <code>https://panel.yourdomain.com</code> with a valid SSL certificate that auto-renews every 90 days.
+  </div>
+
+  <h2>Step 6 — Update APP_URL in Pterodactyl</h2>
+  <p>Update your <code>docker-compose.yml</code> to tell the panel about the new URL:</p>
+  <pre><code># In your docker-compose.yml, update:
+APP_URL: "https://panel.yourdomain.com"</code></pre>
+  <p>Then restart:</p>
+  <pre><code>docker compose down && docker compose up -d</code></pre>
+
+  <h2>Step 7 — Wings SSL (For Node Connections)</h2>
+  <p>If you want your Wings daemon to also use HTTPS (recommended for production):</p>
+  <pre><code>certbot certonly --standalone -d node.yourdomain.com</code></pre>
+  <p>Then in <code>/etc/pterodactyl/config.yml</code>, update the SSL section to point to your certs at <code>/etc/letsencrypt/live/node.yourdomain.com/</code></p>
+
+  <h2>Verify Auto-Renewal</h2>
+  <pre><code>certbot renew --dry-run</code></pre>
+  <p>Should output "Congratulations, all simulated renewals succeeded." If so, your cert will auto-renew forever.</p>
+
+  <h2>Next Steps</h2>
+  <ul>
+    <li>⚖️ <a href="wings-node.html" style="color:var(--accent)">Add a second Wings node</a></li>
+    <li>🥚 <a href="../index.html#eggs" style="color:var(--accent)">Download more game eggs</a></li>
+  </ul>
+</div>
+<footer>
+  <p><a href="../index.html">← PterodactylHub Home</a></p>
+</footer>
+</body>
+</html>

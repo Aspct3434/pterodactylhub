@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FiveM Server on Pterodactyl – Full Setup Guide (2026)</title>
+  <meta name="description" content="How to run a FiveM GTA roleplay server on Pterodactyl Panel with txAdmin integration. Includes working 2026 egg JSON download." />
+  <style>
+    :root{--bg:#0d0f14;--surface:#13161e;--card:#1a1e2a;--accent:#5b6ef5;--text:#e2e8f0;--muted:#94a3b8;--border:#2a2f3e;--green:#22c55e}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7}
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+    .logo{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#5b6ef5,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+    nav a{color:var(--muted);text-decoration:none;font-size:0.9rem}
+    .container{max-width:860px;margin:0 auto;padding:3rem 2rem}
+    h1{font-size:2rem;font-weight:900;margin-bottom:0.5rem;line-height:1.2}
+    .meta{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0 2rem;font-size:0.82rem;color:var(--muted)}
+    .tag{background:rgba(91,110,245,0.15);color:var(--accent);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:700}
+    h2{font-size:1.4rem;font-weight:800;margin:2.5rem 0 0.8rem;padding-top:1rem;border-top:1px solid var(--border)}
+    h3{font-size:1.05rem;font-weight:700;margin:1.5rem 0 0.5rem;color:var(--accent)}
+    p{margin-bottom:1rem;color:#cbd5e1}
+    ul,ol{margin:0 0 1rem 1.5rem;color:#cbd5e1}li{margin-bottom:0.4rem}strong{color:var(--text)}
+    pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;overflow-x:auto;margin:1rem 0}
+    code{font-family:'Fira Code',monospace;font-size:0.88rem;color:#a5f3fc}
+    .callout{border-radius:8px;padding:1rem 1.2rem;margin:1.2rem 0;border-left:3px solid var(--accent);background:rgba(91,110,245,0.1);font-size:0.9rem;color:#cbd5e1}
+    .callout.warn{border-color:#f97316;background:rgba(249,115,22,0.1)}
+    .callout.success{border-color:var(--green);background:rgba(34,197,94,0.1)}
+    .download-box{background:linear-gradient(135deg,rgba(91,110,245,0.15),rgba(124,58,237,0.1));border:1px solid rgba(91,110,245,0.3);border-radius:12px;padding:1.5rem;text-align:center;margin:2rem 0}
+    .download-box h3{margin:0 0 0.5rem;color:var(--text)}
+    .download-box p{font-size:0.88rem;margin-bottom:1rem}
+    .dl-btn{display:inline-block;padding:0.7rem 1.5rem;background:linear-gradient(135deg,#5b6ef5,#7c3aed);color:#fff;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem}
+    .dl-btn:hover{opacity:0.9}
+    footer{background:var(--surface);border-top:1px solid var(--border);padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem}
+    footer a{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="logo">🦕 PterodactylHub</a>
+  <a href="../index.html">← All Guides</a>
+</nav>
+<div class="container">
+  <span class="tag">Intermediate</span>
+  <h1>FiveM Server on Pterodactyl – Full Setup Guide (2026)</h1>
+  <div class="meta">
+    <span>⏱️ 20 min read</span>
+    <span>🚗 FiveM</span>
+    <span>📅 Updated May 2026</span>
+  </div>
+
+  <p>Running a FiveM server through Pterodactyl Panel gives you full control — restart, monitor, manage resources, and add players without SSH. This guide covers everything from the egg install to getting txAdmin running and your server listed publicly.</p>
+
+  <div class="callout">
+    <strong>Prerequisites:</strong> You already have Pterodactyl Panel installed and Wings connected. If not, start with the <a href="pterodactyl-install.html" style="color:var(--accent)">install guide</a> first.
+  </div>
+
+  <div class="download-box">
+    <h3>🥚 FiveM + txAdmin Egg</h3>
+    <p>Download the working 2026 egg file and import it directly into your Pterodactyl Panel.</p>
+    <a href="../eggs/fivem-txadmin.json" class="dl-btn" download>⬇ Download Egg JSON</a>
+  </div>
+
+  <h2>Step 1 — Get a FiveM License Key</h2>
+  <p>FiveM requires a license key tied to a Steam account. It's free.</p>
+  <ol>
+    <li>Go to <a href="https://keymaster.fivem.net" style="color:var(--accent)" target="_blank">keymaster.fivem.net</a></li>
+    <li>Log in with Steam</li>
+    <li>Click <strong>New Server</strong> → fill in your server IP and name</li>
+    <li>Copy the license key (looks like: <code>cfxk_xxxxxxxxxxxx</code>)</li>
+  </ol>
+
+  <div class="callout warn">
+    <strong>Important:</strong> The license key is locked to a specific IP address. If you change your server IP later, you'll need to update it in keymaster.
+  </div>
+
+  <h2>Step 2 — Import the Egg</h2>
+  <ol>
+    <li>In your Pterodactyl admin panel, go to <strong>Admin → Nests</strong></li>
+    <li>Create a new nest called "FiveM" (or use an existing one)</li>
+    <li>Click <strong>Import Egg</strong></li>
+    <li>Upload the <code>fivem-txadmin.json</code> file you downloaded above</li>
+    <li>Hit Save</li>
+  </ol>
+
+  <h2>Step 3 — Create the FiveM Server</h2>
+  <ol>
+    <li>Go to <strong>Admin → Servers → Create New</strong></li>
+    <li>Name your server</li>
+    <li>Select a node and allocation (you need port 30120 open — this is the main FiveM port)</li>
+    <li>Under "Container Image", select the FiveM egg you just imported</li>
+    <li>Set resources:
+      <ul>
+        <li><strong>RAM:</strong> minimum 4GB (8GB recommended for scripts)</li>
+        <li><strong>Disk:</strong> minimum 10GB</li>
+        <li><strong>CPU:</strong> 200–400%</li>
+      </ul>
+    </li>
+    <li>Under "Egg Variables", paste your license key</li>
+    <li>Hit Create</li>
+  </ol>
+
+  <h2>Step 4 — Open Required Ports</h2>
+  <p>On your VPS, make sure these ports are open:</p>
+  <pre><code>ufw allow 30120/tcp
+ufw allow 30120/udp
+ufw allow 40120/tcp   # txAdmin web panel</code></pre>
+
+  <h2>Step 5 — Start the Server & Set Up txAdmin</h2>
+  <ol>
+    <li>In Pterodactyl, start your FiveM server</li>
+    <li>Watch the console — it will output a txAdmin setup URL like:<br/><code>http://YOUR_IP:40120/</code></li>
+    <li>Open that URL in your browser</li>
+    <li>Follow the txAdmin first-run wizard — choose a recipe (QBCore, ESX, or vanilla)</li>
+    <li>txAdmin will auto-download and configure your framework</li>
+  </ol>
+
+  <div class="callout success">
+    <strong>🎉 Your server is live!</strong> Players can connect in FiveM by pressing F8 and typing <code>connect YOUR_IP:30120</code>
+  </div>
+
+  <h2>Step 6 — Add to FiveM Server List (Optional)</h2>
+  <p>To appear in the public FiveM server browser:</p>
+  <ol>
+    <li>In your <code>server.cfg</code>, add: <code>sv_master1 "https://servers-frontend.fivem.net/api/servers/join"</code></li>
+    <li>Make sure <code>sv_projectName</code> and <code>sv_projectDesc</code> are set</li>
+    <li>Your server will appear in the browser within ~5 minutes of starting</li>
+  </ol>
+
+  <h2>Common Issues</h2>
+  <h3>Server won't start — "License key invalid"</h3>
+  <p>Double-check the IP in keymaster.fivem.net matches your VPS IP exactly. The license is IP-locked.</p>
+
+  <h3>txAdmin panel unreachable</h3>
+  <p>Make sure port 40120 is open in your firewall. Check: <code>ufw status</code> and also check your VPS provider's firewall/security group settings.</p>
+
+  <h3>Players can connect but get "server shutting down"</h3>
+  <p>Your server is running out of RAM. Increase the memory allocation in Pterodactyl.</p>
+
+  <h2>Next Steps</h2>
+  <ul>
+    <li>Install QBCore or ESX framework through txAdmin recipes</li>
+    <li>Add resources from <a href="https://github.com/qbcore-framework" style="color:var(--accent)" target="_blank">QBCore GitHub</a></li>
+    <li>Set up a <a href="reverse-proxy.html" style="color:var(--accent)">custom domain with SSL</a></li>
+  </ul>
+</div>
+<footer>
+  <p><a href="../index.html">← PterodactylHub Home</a> · Some links are affiliate links.</p>
+</footer>
+</body>
+</html>
