@@ -1,0 +1,53 @@
+{
+  "_comment": "Pterodactyl Egg — FiveM + txAdmin | PterodactylHub.github.io",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-05-15T00:00:00+00:00",
+  "name": "FiveM + txAdmin (2026)",
+  "author": "pterodactylhub@gmail.com",
+  "uuid": "c7d1ef4a-3f5b-4c6d-8e9f-1a2b3c4d5e6f",
+  "description": "FiveM is a modification framework for GTA V, enabling you to play multiplayer on customized dedicated servers. Includes txAdmin web management panel with auto-update support.",
+  "features": ["pid_limit"],
+  "docker_images": {
+    "Ubuntu 22.04": "ghcr.io/pterodactyl/yolks:ubuntu_22"
+  },
+  "file_denylist": [],
+  "startup": "bash /home/container/run.sh",
+  "config": {
+    "files": "{}",
+    "logs": "{}",
+    "startup": "{\"done\":\"txAdmin\"}",
+    "stop": "quit"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\napt-get update && apt-get install -y curl wget xz-utils\ncd /mnt/server\n\n# Download latest FiveM server artifacts\nARTIFACT=$(curl -s https://changelogs-live.fivem.net/api/changelog/versions/linux/server | jq -r '.latest')\nwget -O fx.tar.xz \"https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/${ARTIFACT}/fx.tar.xz\"\ntar xf fx.tar.xz\nrm fx.tar.xz\n\necho \"FiveM ${ARTIFACT} installed successfully.\"",
+      "container": "ghcr.io/pterodactyl/installers:debian",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "txAdmin Port",
+      "description": "The port for the txAdmin web interface. Usually 40120.",
+      "env_variable": "TXADMIN_PORT",
+      "default_value": "40120",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|numeric|between:1024,65535",
+      "field_type": "text"
+    },
+    {
+      "name": "License Key",
+      "description": "Your FiveM license key from keymaster.fivem.net",
+      "env_variable": "LICENSE_KEY",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    }
+  ]
+}

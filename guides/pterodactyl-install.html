@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Install Pterodactyl Panel on Any VPS (2026) – PterodactylHub</title>
+  <meta name="description" content="Complete step-by-step guide to installing Pterodactyl Panel using Docker Compose on Ubuntu 22.04/24.04 in under 30 minutes. Updated for 2026." />
+  <link rel="canonical" href="https://pterodactylhub.github.io/guides/pterodactyl-install.html" />
+  <style>
+    :root { --bg:#0d0f14;--surface:#13161e;--card:#1a1e2a;--accent:#5b6ef5;--text:#e2e8f0;--muted:#94a3b8;--border:#2a2f3e;--green:#22c55e; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7}
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+    .logo{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#5b6ef5,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+    nav a{color:var(--muted);text-decoration:none;font-size:0.9rem}nav a:hover{color:var(--text)}
+    .layout{display:grid;grid-template-columns:1fr 280px;gap:3rem;max-width:1100px;margin:0 auto;padding:3rem 2rem}
+    @media(max-width:768px){.layout{grid-template-columns:1fr}}
+    .sidebar{position:sticky;top:80px;height:fit-content}
+    .toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+    .toc h3{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:1rem}
+    .toc ol{list-style:none;counter-reset:toc-counter}
+    .toc li{counter-increment:toc-counter;padding:0.35rem 0;border-bottom:1px solid var(--border)}
+    .toc li:last-child{border:none}
+    .toc li a{color:var(--muted);text-decoration:none;font-size:0.88rem;display:flex;gap:0.5rem;align-items:center}
+    .toc li a::before{content:counter(toc-counter);background:var(--surface);color:var(--accent);border-radius:4px;padding:0.1rem 0.4rem;font-size:0.75rem;font-weight:700;min-width:1.4rem;text-align:center}
+    .toc li a:hover{color:var(--text)}
+    .aff-sidebar{background:linear-gradient(135deg,rgba(91,110,245,0.12),rgba(124,58,237,0.08));border:1px solid rgba(91,110,245,0.25);border-radius:12px;padding:1.5rem;margin-top:1.5rem;text-align:center}
+    .aff-sidebar h4{font-size:1rem;font-weight:700;margin-bottom:0.5rem}
+    .aff-sidebar p{font-size:0.82rem;color:var(--muted);margin-bottom:1rem}
+    .aff-sidebar a{display:block;background:linear-gradient(135deg,#5b6ef5,#7c3aed);color:#fff;padding:0.6rem 1rem;border-radius:7px;text-decoration:none;font-weight:700;font-size:0.88rem;margin-bottom:0.5rem;transition:opacity 0.2s}
+    .aff-sidebar a:hover{opacity:0.9}
+    .aff-sidebar .note{font-size:0.75rem;color:var(--muted)}
+
+    article h1{font-size:2rem;font-weight:900;margin-bottom:0.5rem;line-height:1.2}
+    .meta{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0 2rem;font-size:0.82rem;color:var(--muted)}
+    .meta span{display:flex;align-items:center;gap:0.3rem}
+    .tag{background:rgba(91,110,245,0.15);color:var(--accent);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:700}
+
+    article h2{font-size:1.4rem;font-weight:800;margin:2.5rem 0 0.8rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--text)}
+    article h3{font-size:1.1rem;font-weight:700;margin:1.5rem 0 0.6rem;color:var(--accent)}
+    article p{margin-bottom:1rem;color:#cbd5e1}
+    article ul,article ol{margin:0 0 1rem 1.5rem;color:#cbd5e1}
+    article li{margin-bottom:0.4rem}
+    article strong{color:var(--text)}
+
+    pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;overflow-x:auto;margin:1rem 0;position:relative}
+    code{font-family:'Fira Code','Cascadia Code',monospace;font-size:0.88rem;color:#a5f3fc}
+    .copy-btn{position:absolute;top:0.6rem;right:0.6rem;background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:5px;padding:0.25rem 0.6rem;font-size:0.75rem;cursor:pointer;transition:all 0.2s}
+    .copy-btn:hover{color:var(--text);border-color:var(--accent)}
+
+    .callout{border-radius:8px;padding:1rem 1.2rem;margin:1.2rem 0;display:flex;gap:0.8rem;align-items:flex-start}
+    .callout-info{background:rgba(91,110,245,0.1);border-left:3px solid var(--accent)}
+    .callout-warn{background:rgba(249,115,22,0.1);border-left:3px solid #f97316}
+    .callout-success{background:rgba(34,197,94,0.1);border-left:3px solid var(--green)}
+    .callout-icon{font-size:1.1rem;margin-top:0.1rem}
+    .callout-text{font-size:0.9rem;color:#cbd5e1}
+    .callout-text strong{color:var(--text)}
+
+    .step-num{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;background:var(--accent);color:#fff;border-radius:50%;font-weight:900;font-size:0.85rem;margin-right:0.5rem;flex-shrink:0}
+
+    footer{background:var(--surface);border-top:1px solid var(--border);padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem}
+    footer a{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="logo">🦕 PterodactylHub</a>
+  <a href="../index.html">← All Guides</a>
+</nav>
+
+<div class="layout">
+  <article>
+    <span class="tag">Beginner</span>
+    <h1>Install Pterodactyl Panel on Any VPS (2026)</h1>
+    <div class="meta">
+      <span>⏱️ 15 min read</span>
+      <span>🐧 Ubuntu 22.04 / 24.04</span>
+      <span>📅 Updated May 2026</span>
+      <span>🐳 Docker Compose</span>
+    </div>
+
+    <p>Pterodactyl Panel is the most popular open-source game server management panel. This guide walks you through a <strong>complete Docker Compose install</strong> — the cleanest and most maintainable setup method in 2026.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-text"><strong>What you need:</strong> A VPS running Ubuntu 22.04 or 24.04, a domain name (optional but recommended), and basic comfort with SSH. If you don't have a VPS yet, see our <a href="cheap-vps.html" style="color:var(--accent)">VPS picks guide</a>.</div>
+    </div>
+
+    <!-- ============ SECTION 1 ============ -->
+    <h2 id="vps-setup">1. Prepare Your VPS</h2>
+
+    <h3>Connect via SSH</h3>
+    <p>Log into your VPS as root or a sudo user:</p>
+    <pre><code>ssh root@YOUR_SERVER_IP</code><button class="copy-btn" onclick="navigator.clipboard.writeText('ssh root@YOUR_SERVER_IP')">Copy</button></pre>
+
+    <h3>Update the system</h3>
+    <pre><code>apt update && apt upgrade -y</code><button class="copy-btn" onclick="navigator.clipboard.writeText('apt update && apt upgrade -y')">Copy</button></pre>
+
+    <h3>Install Docker & Docker Compose</h3>
+    <pre><code>curl -fsSL https://get.docker.com | sh
+systemctl enable --now docker</code><button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://get.docker.com | sh\nsystemctl enable --now docker')">Copy</button></pre>
+
+    <div class="callout callout-success">
+      <span class="callout-icon">✅</span>
+      <div class="callout-text">Verify Docker is working: <code>docker --version</code> should output something like <code>Docker version 27.x</code></div>
+    </div>
+
+    <!-- ============ SECTION 2 ============ -->
+    <h2 id="compose-setup">2. Set Up the Docker Compose Stack</h2>
+
+    <h3>Create the project directory</h3>
+    <pre><code>mkdir -p /srv/pterodactyl && cd /srv/pterodactyl</code><button class="copy-btn" onclick="navigator.clipboard.writeText('mkdir -p /srv/pterodactyl && cd /srv/pterodactyl')">Copy</button></pre>
+
+    <h3>Create <code>docker-compose.yml</code></h3>
+    <p>Paste this entire file — it sets up the Panel, MariaDB, and Redis in one shot:</p>
+    <pre><code>version: '3.8'
+
+services:
+  database:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: panel
+      MYSQL_USER: pterodactyl
+      MYSQL_PASSWORD: dbpassword
+    volumes:
+      - db_data:/var/lib/mysql
+
+  cache:
+    image: redis:alpine
+    restart: always
+
+  panel:
+    image: ghcr.io/pterodactyl/panel:v1.11.10
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - database
+      - cache
+    environment:
+      APP_URL: "http://YOUR_SERVER_IP"
+      APP_TIMEZONE: "UTC"
+      APP_SERVICE_AUTHOR: "your@email.com"
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_DATABASE: panel
+      DB_USERNAME: pterodactyl
+      DB_PASSWORD: dbpassword
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: cache
+    volumes:
+      - panel_var:/app/var
+      - panel_nginx:/etc/nginx/http.d
+      - panel_logs:/app/storage/logs
+      - panel_certs:/etc/letsencrypt
+
+volumes:
+  db_data:
+  panel_var:
+  panel_nginx:
+  panel_logs:
+  panel_certs:</code><button class="copy-btn" onclick="navigator.clipboard.writeText('See guide for full compose file')">Copy</button></pre>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text"><strong>Change the passwords!</strong> Replace <code>rootpassword</code> and <code>dbpassword</code> with strong unique passwords before deploying.</div>
+    </div>
+
+    <!-- ============ SECTION 3 ============ -->
+    <h2 id="start-panel">3. Start the Panel</h2>
+
+    <pre><code>docker compose up -d</code><button class="copy-btn" onclick="navigator.clipboard.writeText('docker compose up -d')">Copy</button></pre>
+
+    <p>Wait ~60 seconds for all containers to start and the database to initialize. Then check status:</p>
+    <pre><code>docker compose ps</code><button class="copy-btn" onclick="navigator.clipboard.writeText('docker compose ps')">Copy</button></pre>
+
+    <p>All three services (database, cache, panel) should show <code>Up</code> or <code>running</code>.</p>
+
+    <!-- ============ SECTION 4 ============ -->
+    <h2 id="create-admin">4. Create Your Admin User</h2>
+
+    <pre><code>docker compose exec panel php artisan p:user:make</code><button class="copy-btn" onclick="navigator.clipboard.writeText('docker compose exec panel php artisan p:user:make')">Copy</button></pre>
+
+    <p>Follow the prompts — enter your email, username, name, and set a password. When asked "Should this user be an administrator?", type <strong>yes</strong>.</p>
+
+    <!-- ============ SECTION 5 ============ -->
+    <h2 id="access-panel">5. Access Your Panel</h2>
+
+    <p>Open your browser and navigate to:</p>
+    <pre><code>http://YOUR_SERVER_IP</code></pre>
+
+    <p>Log in with the admin account you just created. You should see the Pterodactyl dashboard. 🎉</p>
+
+    <div class="callout callout-success">
+      <span class="callout-icon">🎉</span>
+      <div class="callout-text"><strong>Panel is up!</strong> Next step is installing Wings (the daemon that actually runs game servers) on the same or a separate machine. See our <a href="wings-node.html" style="color:var(--accent)">Wings setup guide</a>.</div>
+    </div>
+
+    <!-- ============ SECTION 6 ============ -->
+    <h2 id="wings">6. Install Wings (Game Server Daemon)</h2>
+
+    <p>Wings is the backend that runs your actual game servers. Install it on the same machine (or a separate node):</p>
+
+    <pre><code># Install Wings
+mkdir -p /etc/pterodactyl
+curl -L -o /usr/local/bin/wings \
+  "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64"
+chmod +x /usr/local/bin/wings</code><button class="copy-btn" onclick="navigator.clipboard.writeText('mkdir -p /etc/pterodactyl\ncurl -L -o /usr/local/bin/wings \\\n  \"https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64\"\nchmod +x /usr/local/bin/wings')">Copy</button></pre>
+
+    <p>Then in your Pterodactyl Panel:</p>
+    <ol>
+      <li>Go to <strong>Admin → Nodes → Create New</strong></li>
+      <li>Fill in your server IP, name, and memory/disk limits</li>
+      <li>Click <strong>Generate Token</strong> and copy the config</li>
+      <li>Paste the config into <code>/etc/pterodactyl/config.yml</code> on your server</li>
+      <li>Start Wings: <code>wings --debug</code> (test first), then set up the systemd service</li>
+    </ol>
+
+    <h3>Create Wings systemd service</h3>
+    <pre><code>cat > /etc/systemd/system/wings.service << 'EOF'
+[Unit]
+Description=Pterodactyl Wings Daemon
+After=docker.service
+Requires=docker.service
+PartOf=docker.service
+
+[Service]
+User=root
+WorkingDirectory=/etc/pterodactyl
+LimitNOFILE=4096
+PIDFile=/var/run/wings/daemon.pid
+ExecStart=/usr/local/bin/wings
+Restart=on-failure
+StartLimitInterval=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable --now wings</code><button class="copy-btn" onclick="navigator.clipboard.writeText('systemctl enable --now wings')">Copy</button></pre>
+
+    <!-- ============ SECTION 7 ============ -->
+    <h2 id="first-server">7. Create Your First Game Server</h2>
+
+    <p>Back in the panel:</p>
+    <ol>
+      <li>Go to <strong>Admin → Servers → Create New</strong></li>
+      <li>Select the node you just added</li>
+      <li>Choose a game egg (e.g., Minecraft Paper)</li>
+      <li>Set memory and disk limits</li>
+      <li>Hit Create — your server will install automatically</li>
+    </ol>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">Need custom eggs not included by default? Download our <a href="../eggs/" style="color:var(--accent)">free egg collection</a> — includes FiveM, Valheim, Rust, CS2, and more.</div>
+    </div>
+
+    <!-- ============ TROUBLESHOOTING ============ -->
+    <h2 id="troubleshoot">Common Issues</h2>
+
+    <h3>Panel shows 502 Bad Gateway</h3>
+    <p>The PHP-FPM service inside the container is still starting. Wait 30 seconds and refresh. If it persists: <code>docker compose restart panel</code></p>
+
+    <h3>Wings can't connect to panel</h3>
+    <p>Check your firewall — port 8080 (Wings API) must be open. On Ubuntu: <code>ufw allow 8080</code>. Also verify the Panel URL in your Node config matches exactly.</p>
+
+    <h3>Database connection refused</h3>
+    <p>Make sure all three containers are running: <code>docker compose ps</code>. If the DB container exited, check logs: <code>docker compose logs database</code></p>
+
+    <h3>Server stuck on "Installing"</h3>
+    <p>Wings may not be connected. Check: <code>systemctl status wings</code> and look at Wings logs: <code>journalctl -u wings -f</code></p>
+
+    <h2 id="next">What's Next?</h2>
+    <ul>
+      <li>📖 <a href="reverse-proxy.html" style="color:var(--accent)">Set up a domain + HTTPS with Nginx</a></li>
+      <li>🥚 <a href="../index.html#eggs" style="color:var(--accent)">Download more game eggs</a></li>
+      <li>⚖️ <a href="pelican-vs-pterodactyl.html" style="color:var(--accent)">Pelican vs Pterodactyl — which should you use?</a></li>
+    </ul>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="toc">
+      <h3>Table of Contents</h3>
+      <ol>
+        <li><a href="#vps-setup">Prepare Your VPS</a></li>
+        <li><a href="#compose-setup">Docker Compose Setup</a></li>
+        <li><a href="#start-panel">Start the Panel</a></li>
+        <li><a href="#create-admin">Create Admin User</a></li>
+        <li><a href="#access-panel">Access Your Panel</a></li>
+        <li><a href="#wings">Install Wings</a></li>
+        <li><a href="#first-server">First Game Server</a></li>
+        <li><a href="#troubleshoot">Troubleshooting</a></li>
+      </ol>
+    </div>
+
+    <div class="aff-sidebar">
+      <h4>🚀 Need a VPS?</h4>
+      <p>We recommend Hetzner for EU users — best price/performance for game servers.</p>
+      <a href="https://hetzner.cloud/?ref=YOURCODEHERE" target="_blank" rel="noopener">Get Hetzner VPS →</a>
+      <a href="https://www.vultr.com/?ref=YOURCODEHERE" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#007bfc,#0055b3)">Try Vultr ($100 free) →</a>
+      <p class="note">Affiliate links — help keep this site free.</p>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <p><a href="../index.html">← PterodactylHub Home</a> · Some links are affiliate links.</p>
+</footer>
+
+</body>
+</html>

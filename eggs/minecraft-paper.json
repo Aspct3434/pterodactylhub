@@ -1,0 +1,56 @@
+{
+  "_comment": "Pterodactyl Egg — Minecraft Paper | PterodactylHub.github.io",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-05-15T00:00:00+00:00",
+  "name": "Minecraft Paper (Auto-Update)",
+  "author": "pterodactylhub@gmail.com",
+  "uuid": "a2b4aaae-2c35-4ac4-b5a0-8bde23e8a4c2",
+  "description": "Paper is a high-performance fork of the Spigot Minecraft Server that aims to fix gameplay and mechanics inconsistencies as well as to improve performance. Auto-downloads latest build on start.",
+  "features": ["eula", "java_version", "pid_limit"],
+  "docker_images": {
+    "Java 21 (Recommended)": "ghcr.io/pterodactyl/yolks:java_21",
+    "Java 17": "ghcr.io/pterodactyl/yolks:java_17",
+    "Java 11": "ghcr.io/pterodactyl/yolks:java_11",
+    "Java 8": "ghcr.io/pterodactyl/yolks:java_8"
+  },
+  "file_denylist": [],
+  "startup": "java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar server.jar --nogui",
+  "config": {
+    "files": "{}",
+    "logs": "{}",
+    "startup": "{\"done\":\"For help, type\"}",
+    "stop": "stop"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\napt-get update\napt-get install -y curl jq\ncd /mnt/server\nBUILD=$(curl -s https://api.papermc.io/v2/projects/paper/versions/${MC_VERSION}/builds | jq -r '.builds[-1].build')\ncurl -o server.jar https://api.papermc.io/v2/projects/paper/versions/${MC_VERSION}/builds/${BUILD}/downloads/paper-${MC_VERSION}-${BUILD}.jar\necho \"eula=true\" > eula.txt",
+      "container": "ghcr.io/pterodactyl/installers:debian",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Minecraft Version",
+      "description": "The version of Minecraft to install. Example: 1.20.4",
+      "env_variable": "MC_VERSION",
+      "default_value": "1.20.4",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:10",
+      "field_type": "text"
+    },
+    {
+      "name": "Server Jar File",
+      "description": "The name of the server jar file.",
+      "env_variable": "SERVER_JARFILE",
+      "default_value": "server.jar",
+      "user_viewable": true,
+      "user_editable": false,
+      "rules": "required|string|max:50",
+      "field_type": "text"
+    }
+  ]
+}

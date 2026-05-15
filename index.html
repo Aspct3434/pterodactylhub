@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PterodactylHub – Game Server Setup Guides</title>
+  <meta name="description" content="Free, up-to-date guides for self-hosting game servers with Pterodactyl Panel, custom eggs, VPS setup, and more." />
+  <meta property="og:title" content="PterodactylHub – Game Server Setup Guides" />
+  <meta property="og:description" content="The #1 resource for self-hosted game servers. Pterodactyl setup, eggs, VPS picks, and tutorials." />
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #13161e;
+      --card: #1a1e2a;
+      --accent: #5b6ef5;
+      --accent2: #7c3aed;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #2a2f3e;
+      --green: #22c55e;
+      --orange: #f97316;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav ul li a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    nav ul li a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(91,110,245,0.15), transparent);
+    }
+    .hero .badge {
+      display: inline-block;
+      background: rgba(91,110,245,0.2);
+      color: var(--accent);
+      border: 1px solid rgba(91,110,245,0.4);
+      border-radius: 999px;
+      padding: 0.3rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.15; margin-bottom: 1rem; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 1.1rem; color: var(--muted); max-width: 600px; margin: 0 auto 2.5rem; }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 1.75rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(91,110,245,0.4); }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* STATS */
+    .stats { display: flex; justify-content: center; gap: 3rem; padding: 2.5rem 2rem; flex-wrap: wrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 900; color: var(--accent); }
+    .stat-label { font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* CONTENT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; }
+    .section-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .section-sub { color: var(--muted); margin-bottom: 2.5rem; }
+
+    /* CARDS */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 4rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+      text-decoration: none; color: inherit;
+      display: block;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 0.2rem 0.6rem; border-radius: 4px; margin-bottom: 0.8rem;
+    }
+    .tag-beginner { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tag-intermediate { background: rgba(249,115,22,0.15); color: var(--orange); }
+    .tag-advanced { background: rgba(91,110,245,0.15); color: var(--accent); }
+    .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.88rem; color: var(--muted); }
+    .card-meta { margin-top: 1rem; font-size: 0.78rem; color: var(--muted); display: flex; gap: 1rem; }
+    .card-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+    /* AFFILIATE BANNER */
+    .aff-banner {
+      background: linear-gradient(135deg, rgba(91,110,245,0.15), rgba(124,58,237,0.1));
+      border: 1px solid rgba(91,110,245,0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+    .aff-banner h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .aff-banner p { color: var(--muted); font-size: 0.9rem; }
+    .aff-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .aff-link {
+      padding: 0.5rem 1.1rem;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .aff-link:hover { opacity: 0.85; }
+    .aff-hetzner { background: #e53e3e; color: #fff; }
+    .aff-vultr { background: #007bfc; color: #fff; }
+    .aff-contabo { background: #1a3a6e; color: #fff; }
+    .aff-bisect { background: #22c55e; color: #111; }
+
+    /* EGGS TABLE */
+    .eggs-section { margin-bottom: 4rem; }
+    .eggs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .egg-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .egg-card:hover { border-color: var(--accent); }
+    .egg-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .egg-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .egg-card p { font-size: 0.8rem; color: var(--muted); }
+    .egg-card a { display: inline-block; margin-top: 0.8rem; font-size: 0.8rem; color: var(--accent); text-decoration: none; font-weight: 600; }
+    .egg-card a:hover { text-decoration: underline; }
+
+    /* COMPARISON */
+    .compare-table { width: 100%; border-collapse: collapse; margin-bottom: 4rem; }
+    .compare-table th { background: var(--surface); padding: 0.8rem 1rem; text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 2px solid var(--border); }
+    .compare-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .compare-table tr:hover td { background: var(--card); }
+    .check { color: var(--green); font-size: 1.1rem; }
+    .cross { color: #ef4444; font-size: 1.1rem; }
+    .highlight-row td { background: rgba(91,110,245,0.08) !important; font-weight: 600; }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">🦕 PterodactylHub</div>
+  <ul>
+    <li><a href="#guides">Guides</a></li>
+    <li><a href="#eggs">Eggs</a></li>
+    <li><a href="#vps">VPS Picks</a></li>
+    <li><a href="#compare">Compare</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="badge">🔥 Updated May 2026</div>
+  <h1>Self-Host Your Game Server<br/><span>The Right Way</span></h1>
+  <p>Pterodactyl Panel tutorials, custom eggs, VPS comparisons, and everything you need to run your own game server for under $5/month.</p>
+  <div class="hero-actions">
+    <a href="#guides" class="btn btn-primary">📖 Start Reading</a>
+    <a href="#vps" class="btn btn-secondary">💸 Cheap VPS Picks</a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Free Guides</div></div>
+  <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Custom Eggs</div></div>
+  <div class="stat"><div class="stat-num">$5/mo</div><div class="stat-label">Min. VPS Cost</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free to Use</div></div>
+</div>
+
+<!-- GUIDES -->
+<div class="container" id="guides">
+  <div class="section-title">📖 Latest Guides</div>
+  <p class="section-sub">Step-by-step tutorials for every skill level.</p>
+
+  <div class="grid">
+
+    <a class="card" href="guides/pterodactyl-install.html">
+      <span class="card-tag tag-beginner">Beginner</span>
+      <h3>Install Pterodactyl Panel on Any VPS (2026)</h3>
+      <p>A complete, updated guide to installing Pterodactyl Panel using Docker Compose in under 30 minutes. Works on Ubuntu 22/24.</p>
+      <div class="card-meta">
+        <span>⏱️ 15 min read</span>
+        <span>🐧 Ubuntu</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/minecraft-egg.html">
+      <span class="card-tag tag-beginner">Beginner</span>
+      <h3>Best Minecraft Eggs for Pterodactyl (Vanilla, Fabric, Paper)</h3>
+      <p>Download and install working Minecraft eggs for Pterodactyl — Vanilla, Paper, Fabric, and Forge all covered.</p>
+      <div class="card-meta">
+        <span>⏱️ 10 min read</span>
+        <span>⛏️ Minecraft</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/fivem-egg.html">
+      <span class="card-tag tag-intermediate">Intermediate</span>
+      <h3>FiveM Server on Pterodactyl – Full Setup Guide</h3>
+      <p>Run a FiveM GTA roleplay server on Pterodactyl Panel with txAdmin integration. Includes working 2026 egg JSON.</p>
+      <div class="card-meta">
+        <span>⏱️ 20 min read</span>
+        <span>🚗 FiveM</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/cheap-vps.html">
+      <span class="card-tag tag-beginner">Beginner</span>
+      <h3>Best Cheap VPS for Game Servers in 2026</h3>
+      <p>Tested comparison of Hetzner, Contabo, Vultr, and BisectHosting. Real benchmarks, real prices, no fluff.</p>
+      <div class="card-meta">
+        <span>⏱️ 8 min read</span>
+        <span>💰 Pricing</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/pelican-vs-pterodactyl.html">
+      <span class="card-tag tag-intermediate">Intermediate</span>
+      <h3>Pelican vs Pterodactyl Panel – Which One in 2026?</h3>
+      <p>Pelican is the spiritual successor to Pterodactyl. Here's a side-by-side comparison of features, stability, and community support.</p>
+      <div class="card-meta">
+        <span>⏱️ 6 min read</span>
+        <span>⚖️ Comparison</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/valheim-egg.html">
+      <span class="card-tag tag-intermediate">Intermediate</span>
+      <h3>Valheim Dedicated Server on Pterodactyl (2026 Egg)</h3>
+      <p>Host your own Valheim world for you and your friends. Includes auto-backup egg and proper permissions setup.</p>
+      <div class="card-meta">
+        <span>⏱️ 12 min read</span>
+        <span>⚔️ Valheim</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/reverse-proxy.html">
+      <span class="card-tag tag-advanced">Advanced</span>
+      <h3>Nginx Reverse Proxy + SSL for Pterodactyl Panel</h3>
+      <p>Ditch the ugly IP:port URL. Set up a real domain with HTTPS using Nginx + Certbot. Step-by-step with real config files.</p>
+      <div class="card-meta">
+        <span>⏱️ 18 min read</span>
+        <span>🔒 SSL/HTTPS</span>
+      </div>
+    </a>
+
+    <a class="card" href="guides/wings-node.html">
+      <span class="card-tag tag-advanced">Advanced</span>
+      <h3>Add a Second Server Node to Pterodactyl (Wings Setup)</h3>
+      <p>Scale beyond one machine. Install and connect a second Wings node to your existing Pterodactyl Panel.</p>
+      <div class="card-meta">
+        <span>⏱️ 14 min read</span>
+        <span>🖥️ Scaling</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- AFFILIATE BANNER -->
+<div class="container" id="vps">
+  <div class="aff-banner">
+    <div>
+      <h3>🚀 Recommended VPS Providers</h3>
+      <p>These are the providers we actually use and recommend. Honest picks — game servers need good network and CPU, not just cheap storage.</p>
+    </div>
+    <div class="aff-links">
+      <a class="aff-link aff-hetzner" href="https://hetzner.cloud/?ref=YOURCODEHERE" target="_blank" rel="noopener">Hetzner ↗</a>
+      <a class="aff-link aff-vultr" href="https://www.vultr.com/?ref=YOURCODEHERE" target="_blank" rel="noopener">Vultr ↗</a>
+      <a class="aff-link aff-contabo" href="https://contabo.com/?ref=YOURCODEHERE" target="_blank" rel="noopener">Contabo ↗</a>
+      <a class="aff-link aff-bisect" href="https://www.bisecthosting.com/clients/aff.php?aff=YOURCODEHERE" target="_blank" rel="noopener">BisectHosting ↗</a>
+    </div>
+  </div>
+
+  <!-- VPS COMPARISON TABLE -->
+  <div class="section-title">⚖️ VPS Comparison for Game Servers</div>
+  <p class="section-sub">Tested for latency, CPU performance, and price per GB RAM.</p>
+
+  <table class="compare-table" id="compare">
+    <thead>
+      <tr>
+        <th>Provider</th>
+        <th>Starting Price</th>
+        <th>vCPU / RAM</th>
+        <th>DDoS Protection</th>
+        <th>Affiliate Payout</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight-row">
+        <td>🥇 Hetzner</td>
+        <td>€4.51/mo</td>
+        <td>2 vCPU / 4GB</td>
+        <td><span class="check">✓</span></td>
+        <td>€10–€20/ref</td>
+        <td>EU game servers, best value</td>
+      </tr>
+      <tr>
+        <td>Contabo</td>
+        <td>€5.50/mo</td>
+        <td>4 vCPU / 8GB</td>
+        <td><span class="cross">✗</span></td>
+        <td>€5–€10/ref</td>
+        <td>High RAM on budget</td>
+      </tr>
+      <tr>
+        <td>Vultr</td>
+        <td>$6/mo</td>
+        <td>1 vCPU / 1GB</td>
+        <td><span class="check">✓</span></td>
+        <td>$100/ref</td>
+        <td>US users, easy setup</td>
+      </tr>
+      <tr>
+        <td>BisectHosting</td>
+        <td>$2.99/mo</td>
+        <td>Managed</td>
+        <td><span class="check">✓</span></td>
+        <td>10% recurring</td>
+        <td>Beginners, managed servers</td>
+      </tr>
+      <tr>
+        <td>DigitalOcean</td>
+        <td>$6/mo</td>
+        <td>1 vCPU / 1GB</td>
+        <td><span class="cross">✗</span></td>
+        <td>$25–$50/ref</td>
+        <td>Devs, good docs</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EGGS SECTION -->
+<div class="container" id="eggs">
+  <div class="section-title">🥚 Free Custom Eggs</div>
+  <p class="section-sub">Download and import these straight into your Pterodactyl Panel. All tested and working in 2026.</p>
+
+  <div class="eggs-grid eggs-section">
+
+    <div class="egg-card">
+      <div class="egg-icon">⛏️</div>
+      <h4>Minecraft Paper</h4>
+      <p>Auto-updates, Paper API, optimized for performance.</p>
+      <a href="eggs/minecraft-paper.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">🚗</div>
+      <h4>FiveM + txAdmin</h4>
+      <p>Full FiveM setup with txAdmin web panel built in.</p>
+      <a href="eggs/fivem-txadmin.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">⚔️</div>
+      <h4>Valheim</h4>
+      <p>With auto-backup and SteamCMD update support.</p>
+      <a href="eggs/valheim.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">🎮</div>
+      <h4>CS2 (Counter-Strike 2)</h4>
+      <p>Working CS2 dedicated server egg, updated for 2026.</p>
+      <a href="eggs/cs2.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">🌴</div>
+      <h4>Rust</h4>
+      <p>Oxide/uMod support, configurable wipe schedule.</p>
+      <a href="eggs/rust.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">🤖</div>
+      <h4>Generic Node.js Bot</h4>
+      <p>Host Discord bots or any Node.js app on Pterodactyl.</p>
+      <a href="eggs/nodejs-generic.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">🐍</div>
+      <h4>Python App</h4>
+      <p>Run any Python script or bot as a Pterodactyl service.</p>
+      <a href="eggs/python-generic.json" download>⬇ Download Egg</a>
+    </div>
+
+    <div class="egg-card">
+      <div class="egg-icon">📦</div>
+      <h4>Terraria (tModLoader)</h4>
+      <p>Full tModLoader support, auto-world creation on start.</p>
+      <a href="eggs/terraria-tmodloader.json" download>⬇ Download Egg</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p>Made with ❤️ by game server nerds, for game server nerds.</p>
+  <p style="margin-top: 0.5rem;">
+    <a href="#guides">Guides</a> ·
+    <a href="#eggs">Eggs</a> ·
+    <a href="#vps">VPS</a> ·
+    Some links are affiliate links — they help keep this site free.
+  </p>
+</footer>
+
+</body>
+</html>

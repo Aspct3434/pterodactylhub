@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pelican vs Pterodactyl Panel (2026) – Which Should You Use?</title>
+  <meta name="description" content="Pelican Panel is the spiritual successor to Pterodactyl. Here's a detailed 2026 comparison of features, stability, community support, and which you should pick." />
+  <style>
+    :root{--bg:#0d0f14;--surface:#13161e;--card:#1a1e2a;--accent:#5b6ef5;--text:#e2e8f0;--muted:#94a3b8;--border:#2a2f3e;--green:#22c55e}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7}
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+    .logo{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#5b6ef5,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+    nav a{color:var(--muted);text-decoration:none;font-size:0.9rem}nav a:hover{color:var(--text)}
+    .container{max-width:860px;margin:0 auto;padding:3rem 2rem}
+    h1{font-size:2rem;font-weight:900;margin-bottom:0.5rem;line-height:1.2}
+    .meta{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0 2rem;font-size:0.82rem;color:var(--muted)}
+    .tag{background:rgba(91,110,245,0.15);color:var(--accent);border-radius:4px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:700}
+    h2{font-size:1.4rem;font-weight:800;margin:2.5rem 0 0.8rem;padding-top:1rem;border-top:1px solid var(--border)}
+    h3{font-size:1.05rem;font-weight:700;margin:1.5rem 0 0.5rem;color:var(--accent)}
+    p{margin-bottom:1rem;color:#cbd5e1}
+    ul,ol{margin:0 0 1rem 1.5rem;color:#cbd5e1}
+    li{margin-bottom:0.4rem}
+    strong{color:var(--text)}
+    .callout{border-radius:8px;padding:1rem 1.2rem;margin:1.2rem 0;border-left:3px solid var(--accent);background:rgba(91,110,245,0.1);font-size:0.9rem;color:#cbd5e1}
+    .callout.warn{border-color:#f97316;background:rgba(249,115,22,0.1)}
+    .callout.success{border-color:var(--green);background:rgba(34,197,94,0.1)}
+    .vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0}
+    @media(max-width:600px){.vs-grid{grid-template-columns:1fr}}
+    .vs-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+    .vs-card.winner{border-color:var(--accent)}
+    .vs-card h3{margin-top:0;color:var(--text)}
+    .vs-card .score{font-size:2rem;font-weight:900;margin-bottom:0.5rem}
+    .pro{color:var(--green)}
+    .con{color:#ef4444}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+    th{background:var(--surface);padding:0.7rem 1rem;text-align:left;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);border-bottom:2px solid var(--border)}
+    td{padding:0.7rem 1rem;border-bottom:1px solid var(--border);font-size:0.9rem;color:#cbd5e1}
+    tr:hover td{background:var(--card)}
+    .check{color:var(--green)}
+    .cross{color:#ef4444}
+    .verdict{background:linear-gradient(135deg,rgba(91,110,245,0.15),rgba(124,58,237,0.1));border:1px solid rgba(91,110,245,0.3);border-radius:12px;padding:2rem;margin:2rem 0}
+    .verdict h2{border:none;margin-top:0;padding:0}
+    footer{background:var(--surface);border-top:1px solid var(--border);padding:1.5rem;text-align:center;color:var(--muted);font-size:0.85rem}
+    footer a{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="logo">🦕 PterodactylHub</a>
+  <a href="../index.html">← All Guides</a>
+</nav>
+
+<div class="container">
+  <span class="tag">Comparison</span>
+  <h1>Pelican vs Pterodactyl Panel (2026) – Which Should You Use?</h1>
+  <div class="meta">
+    <span>⏱️ 6 min read</span>
+    <span>📅 Updated May 2026</span>
+    <span>⚖️ Comparison</span>
+  </div>
+
+  <p>If you've been in the self-hosted game server world lately, you've probably heard about <strong>Pelican Panel</strong> — the community fork of Pterodactyl that's been gaining serious traction in 2025–2026. So which one should you actually use?</p>
+
+  <p>Short answer: it depends on what you're building. Here's the full breakdown.</p>
+
+  <h2>Background</h2>
+
+  <p>Pterodactyl Panel's original development slowed significantly after 2022. The core team became less active, leaving the community with an increasingly outdated codebase that didn't support modern PHP/Laravel versions.</p>
+
+  <p>In response, a group of community contributors forked the project and created <strong>Pelican Panel</strong> — a modernized, actively maintained rewrite that drops the old Wings daemon in favor of a new Rust-based backend called <strong>Pyrodactyl</strong>.</p>
+
+  <div class="callout">
+    <strong>TL;DR:</strong> Pterodactyl is the original, stable, battle-tested panel. Pelican is the modern fork with active development but less community content (fewer eggs, guides, etc.) so far.
+  </div>
+
+  <h2>Side-by-Side Comparison</h2>
+
+  <div class="vs-grid">
+    <div class="vs-card">
+      <div class="score">🦕</div>
+      <h3>Pterodactyl Panel</h3>
+      <p class="pro">✓ Huge ecosystem — thousands of eggs</p>
+      <p class="pro">✓ Massive community, tons of tutorials</p>
+      <p class="pro">✓ Battle-tested, very stable</p>
+      <p class="pro">✓ Works with most hosting control panels</p>
+      <p class="con">✗ Development has slowed</p>
+      <p class="con">✗ Older Laravel/PHP stack</p>
+      <p class="con">✗ UI feels dated compared to Pelican</p>
+    </div>
+    <div class="vs-card winner">
+      <div class="score">🦤</div>
+      <h3>Pelican Panel</h3>
+      <p class="pro">✓ Actively developed in 2025–2026</p>
+      <p class="pro">✓ Modern UI, much cleaner interface</p>
+      <p class="pro">✓ New Rust daemon (Pyrodactyl) — faster</p>
+      <p class="pro">✓ Modern Laravel, better long-term future</p>
+      <p class="con">✗ Smaller egg ecosystem (growing fast)</p>
+      <p class="con">✗ Fewer tutorials and community guides</p>
+      <p class="con">✗ Still in active development, occasional bugs</p>
+    </div>
+  </div>
+
+  <h2>Feature Comparison Table</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Pterodactyl</th>
+        <th>Pelican</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Active development</td><td><span class="cross">✗ Slow</span></td><td><span class="check">✓ Active</span></td></tr>
+      <tr><td>Egg ecosystem</td><td><span class="check">✓ Huge (500+)</span></td><td>Growing (~100+)</td></tr>
+      <tr><td>Modern UI</td><td><span class="cross">✗ Dated</span></td><td><span class="check">✓ Clean & fast</span></td></tr>
+      <tr><td>Docker Compose install</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td>Wings/daemon support</td><td>Wings (Go)</td><td>Pyrodactyl (Rust)</td></tr>
+      <tr><td>API</td><td><span class="check">✓ v1 API</span></td><td><span class="check">✓ v1 API (compatible)</span></td></tr>
+      <tr><td>Multi-node support</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td>Community tutorials</td><td><span class="check">✓ Tons</span></td><td>Growing</td></tr>
+      <tr><td>Long-term future</td><td>Uncertain</td><td><span class="check">✓ Better outlook</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Which Should You Choose?</h2>
+
+  <h3>Choose Pterodactyl if...</h3>
+  <ul>
+    <li>You need a specific egg that doesn't exist for Pelican yet</li>
+    <li>You're following an existing tutorial or joining a community using Pterodactyl</li>
+    <li>You want maximum stability and don't want to deal with occasional rough edges</li>
+    <li>You're running a commercial hosting service that needs a proven base</li>
+  </ul>
+
+  <h3>Choose Pelican if...</h3>
+  <ul>
+    <li>You're starting fresh with no existing setup to maintain</li>
+    <li>You want a panel that will still be actively maintained in 2027+</li>
+    <li>You want the nicer, more modern UI for yourself or clients</li>
+    <li>You're comfortable with software that's still maturing</li>
+  </ul>
+
+  <div class="verdict">
+    <h2>🏆 Our Verdict (2026)</h2>
+    <p style="margin-top:1rem">For <strong>new setups</strong>: go with <strong>Pelican</strong>. The development momentum is clearly there, the UI is significantly better, and the egg compatibility is catching up fast.</p>
+    <p>For <strong>existing Pterodactyl setups</strong>: no need to migrate right now. Pterodactyl still works perfectly fine and the egg ecosystem is unmatched. Revisit migration in late 2026.</p>
+  </div>
+
+  <h2>How to Install Pelican</h2>
+
+  <p>Pelican's installation is similar to Pterodactyl. The official docs are at <a href="https://pelican.dev" style="color:var(--accent)" target="_blank">pelican.dev</a>. A Docker Compose quick-start:</p>
+
+  <p>Pelican Panel guide coming soon — <a href="../index.html" style="color:var(--accent)">subscribe to updates</a> or check back.</p>
+
+  <h2>More Comparisons</h2>
+  <ul>
+    <li>📖 <a href="pterodactyl-install.html" style="color:var(--accent)">Full Pterodactyl Install Guide</a></li>
+    <li>💰 <a href="cheap-vps.html" style="color:var(--accent)">Best Cheap VPS for Game Servers</a></li>
+    <li>🥚 <a href="../index.html#eggs" style="color:var(--accent)">Download Free Eggs</a></li>
+  </ul>
+
+</div>
+
+<footer>
+  <p><a href="../index.html">← PterodactylHub Home</a> · Some links are affiliate links.</p>
+</footer>
+</body>
+</html>

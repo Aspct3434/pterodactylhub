@@ -1,0 +1,42 @@
+{
+  "_comment": "Pterodactyl Egg — Generic Node.js App / Discord Bot | PterodactylHub.github.io",
+  "meta": { "version": "PTDL_v2" },
+  "exported_at": "2026-05-15T00:00:00+00:00",
+  "name": "Node.js Generic App / Discord Bot",
+  "author": "pterodactylhub@gmail.com",
+  "uuid": "d8e2fa5b-4a6c-7b8d-9e0f-2b3c4d5e6f7a",
+  "description": "A generic Node.js egg. Supports any Node.js application including Discord bots, web servers, or custom scripts. Upload your files and set your start command.",
+  "features": [],
+  "docker_images": {
+    "Node 20 (LTS)": "ghcr.io/pterodactyl/yolks:nodejs_20",
+    "Node 18": "ghcr.io/pterodactyl/yolks:nodejs_18",
+    "Node 16": "ghcr.io/pterodactyl/yolks:nodejs_16"
+  },
+  "file_denylist": [],
+  "startup": "node {{MAIN_FILE}}",
+  "config": {
+    "files": "{}",
+    "logs": "{}",
+    "startup": "{\"done\":\"Running\"}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\napt-get update\ncd /mnt/server\nif [ -f package.json ]; then npm install; fi\necho \"Installation complete.\"",
+      "container": "ghcr.io/pterodactyl/installers:debian",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Main File",
+      "description": "The main JavaScript file to run. e.g. index.js or src/bot.js",
+      "env_variable": "MAIN_FILE",
+      "default_value": "index.js",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:100",
+      "field_type": "text"
+    }
+  ]
+}
