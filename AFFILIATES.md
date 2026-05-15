@@ -31,10 +31,10 @@ Add your unique ref codes to the affiliate links in `index.html` and guide files
 ---
 
 ## 🟡 DigitalOcean
-- **URL:** https://www.digitalocean.com/referral-program
+- **URL:** https://m.do.co/c/5bf8f80cac36
 - **Payout:** $25 credit when referral spends $25
 - **Note:** They get $200 free credit for 60 days — very easy to convert
-- **Replace in code:** `?refcode=YOURCODEHERE`
+- **Replace in code:** ``
 
 ---
 
